@@ -1,0 +1,17 @@
+╭───────────────────────────────────────────────────╮
+│ ✻ Welcome to Claude Code!                         │
+│                                                   │
+│   /help for help, /status for your current setup  │
+│                                                   │
+│   cwd: /Users/dbbaskette/Projects/mcp-server      │
+╰───────────────────────────────────────────────────╯
+⏺ Compact summary (ctrl+r to expand)
+  ⎿  Read ../../../../tmp/mcp-server-sse.log (23 lines)
+  ⎿  Read mcp-server.sh (373 lines)
+  ⎿  Read test-mcp.sh (370 lines)
+  ⎿  Read ../generic-mcp-client/src/main/resources/application-sse-server.yml (20 lines)
+  ⎿  Todo list read (2 items)
+
+> /compact 
+  ⎿  Compacted. ctrl+r to see full summary
+
