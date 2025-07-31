@@ -1,4 +1,0 @@
-{
-  "prompts": [ "PROJECT.md", "prompt/_base/core_prompt.md", "prompt/spring_boot_service/spring_prompt.md", "prompt/mcp_server/mcp_prompt.md" ],
-  "description": "generic-mcp-server prompt set"
-}
