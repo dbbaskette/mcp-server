@@ -53,3 +53,12 @@ application-dev.properties
 # Test output
 test-output/
 coverage/
+
+# User-specific files
+CLAUDE.md
+PROJECT.md
+.cursor.json
+prompt/
+.windsurf.json
+CURRENT.txt
+README-CLAUDE-DESKTOP.md
