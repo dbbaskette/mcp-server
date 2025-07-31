@@ -29,6 +29,58 @@ BUILD=false
 TEST_TOOLS=false
 JAR_FILE="target/mcp-server-0.0.1-SNAPSHOT.jar"
 
+# Function to kill existing MCP server processes
+kill_existing_servers() {
+    echo -e "${BLUE}${TOOLS} Checking for existing MCP server processes...${NC}"
+    
+    # Find Java processes running our JAR file
+    local existing_pids=$(ps aux | grep "mcp-server-.*\.jar" | grep -v grep | awk '{print $2}')
+    
+    if [ -n "$existing_pids" ]; then
+        echo -e "${YELLOW}Found existing MCP server processes:${NC}"
+        echo "$existing_pids" | while read -r pid; do
+            if [ -n "$pid" ]; then
+                echo -e "  ${YELLOW}Killing PID: $pid${NC}"
+                kill "$pid" 2>/dev/null || true
+            fi
+        done
+        
+        # Wait a moment for processes to terminate
+        sleep 2
+        
+        # Force kill any remaining processes
+        local remaining_pids=$(ps aux | grep "mcp-server-.*\.jar" | grep -v grep | awk '{print $2}')
+        if [ -n "$remaining_pids" ]; then
+            echo -e "${YELLOW}Force killing remaining processes...${NC}"
+            echo "$remaining_pids" | while read -r pid; do
+                if [ -n "$pid" ]; then
+                    kill -9 "$pid" 2>/dev/null || true
+                fi
+            done
+            sleep 1
+        fi
+        
+        echo -e "${GREEN}✓${NC} Existing MCP server processes terminated"
+    else
+        echo -e "${GREEN}✓${NC} No existing MCP server processes found"
+    fi
+    
+    # Also check for processes using ports 8080 and 8082 (common MCP ports)
+    for port in 8080 8082; do
+        local port_pid=$(lsof -ti tcp:$port 2>/dev/null)
+        if [ -n "$port_pid" ]; then
+            echo -e "${YELLOW}Found process using port $port (PID: $port_pid), killing...${NC}"
+            kill "$port_pid" 2>/dev/null || true
+            sleep 1
+            # Force kill if still running
+            if kill -0 "$port_pid" 2>/dev/null; then
+                kill -9 "$port_pid" 2>/dev/null || true
+            fi
+            echo -e "${GREEN}✓${NC} Process using port $port terminated"
+        fi
+    done
+}
+
 # Function to test tools in STDIO mode
 test_stdio_tools() {
     echo -e "${YELLOW}Starting server for tool discovery and testing...${NC}"
@@ -244,6 +296,9 @@ if [ ! -f "$JAR_FILE" ]; then
 fi
 
 echo -e "${GREEN}${CHECK_MARK} JAR file found${NC}"
+
+# Kill any existing MCP server processes before starting new tests
+kill_existing_servers
 
 # Display configuration
 echo -e "${CYAN}${GEAR} Configuration:${NC}"
